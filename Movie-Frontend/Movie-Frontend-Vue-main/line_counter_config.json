@@ -1,0 +1,26 @@
+{
+  "exclude_directories": [
+    "node_modules",
+    ".venv",
+    "__pycache__",
+    ".git",
+    ".svn",
+    ".hg",
+    "dist",
+    "build",
+    "target",
+    ".next",
+    ".nuxt",
+    "vendor",
+    ".idea",
+    ".vscode",
+    ".pytest_cache",
+    ".tox",
+    "env",
+    "venv",
+    "ENV",
+    ".bundle",
+	"package.json",
+	"package-lock.json"
+  ]
+}
