@@ -16,7 +16,7 @@ const openReadmeInEditor = () => fetch('/__open-in-editor?file=README.md')
     </template>
     <template #heading>Documentation</template>
 
-    Vue’s
+    Vue's
     <a href="https://vuejs.org/" target="_blank" rel="noopener">official documentation</a>
     provides you with all information you need to get started.
   </WelcomeItem>
@@ -93,3 +93,25 @@ const openReadmeInEditor = () => fetch('/__open-in-editor?file=README.md')
     <a href="https://vuejs.org/sponsor/" target="_blank" rel="noopener">becoming a sponsor</a>.
   </WelcomeItem>
 </template>
+
+<style scoped>
+a {
+  color: #99CDD8;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+a:hover {
+  color: #657166;
+  text-decoration: underline;
+}
+
+code {
+  background: #DAEBE3;
+  color: #657166;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+</style>
