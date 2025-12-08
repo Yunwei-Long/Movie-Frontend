@@ -16,7 +16,6 @@ const getRandomMovies = async (count = 12) => {
   isLoadingRandom.value = true
   try {
     await movieStore.getRandomMovies(count)
-    // Use the enhanced random movies from the store
     randomMovies.value = movieStore.randomMovies
   } catch (error) {
     console.error('Failed to get random movies:', error)
@@ -38,8 +37,6 @@ const getSystemStats = async () => {
 }
 
 const handleMovieClick = (movie) => {
-  console.log('ExploreView handleMovieClick - movie:', movie)
-  console.log('ExploreView handleMovieClick - movie.title:', movie?.title)
   router.push(`/movie/${encodeURIComponent(movie.title)}`)
 }
 
@@ -48,35 +45,32 @@ const handleMovieDetails = async (movie) => {
   router.push(`/movie/${encodeURIComponent(movie.title)}`)
 }
 
-const refreshData = async () => {
+const initializeData = async () => {
   await Promise.all([getRandomMovies(12), getSystemStats()])
 }
 
-onMounted(refreshData)
+onMounted(initializeData)
 </script>
 
 <template>
   <div class="explore-view">
     <div class="container">
-      <!-- Header Section -->
+      <!-- Hero Header Section -->
       <section class="header-section">
+        <div class="header-background"></div>
         <div class="header-content">
-          <h1 class="page-title">🔍 Explore</h1>
+          <!-- 移除了 Discover 徽章 -->
+          <h1 class="page-title">Explore Movies</h1>
           <p class="page-description">
-            Discover random movies and explore the rich features of our movie recommendation system
+            Discover thousands of amazing films and explore our intelligent recommendation system powered by advanced machine learning
           </p>
           <div class="header-actions">
-            <button @click="router.push('/content-based')" class="action-btn content">
-              <span class="btn-icon">🎭</span>
-              Content-Based
-            </button>
-            <button
-              @click="refreshData"
-              class="action-btn refresh"
-              :disabled="isLoadingRandom || isLoadingStats"
-            >
-              <span class="btn-icon">🔄</span>
-              Refresh Data
+            <button @click="router.push('/content-based')" class="action-btn primary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20h9"/>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+              <span class="btn-text">Content-Based Recommendations</span>
             </button>
           </div>
         </div>
@@ -84,49 +78,57 @@ onMounted(refreshData)
 
       <!-- System Statistics -->
       <section class="stats-section">
-        <h2 class="section-title">📊 System Statistics</h2>
-        <div class="stats-grid" v-if="systemStats">
-          <div class="stat-card">
-            <div class="stat-icon">🎬</div>
-            <div class="stat-content">
-              <h3>{{ systemStats.total_movies?.toLocaleString() || '4,803' }}</h3>
-              <p>Total Movies</p>
-              <small>Complete TMDB dataset</small>
+        <div class="section-header-wrapper">
+          <h2 class="section-title">System Statistics</h2>
+          <p class="section-subtitle">Real-time insights into our movie database</p>
+        </div>
+        
+        <div class="stats-grid" v-if="systemStats && !isLoadingStats">
+          <div class="stat-card" v-for="(stat, index) in [
+            { 
+              value: systemStats.total_movies?.toLocaleString() || '4,803', 
+              label: 'Total Movies', 
+              desc: 'Complete TMDB dataset',
+              icon: 'M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z'
+            },
+            { 
+              value: systemStats.total_ratings?.toLocaleString() || '50K', 
+              label: 'Total Ratings', 
+              desc: 'User ratings collected',
+              icon: 'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'
+            },
+            { 
+              value: (systemStats.avg_rating || 4.2).toFixed(2), 
+              label: 'Average Rating', 
+              desc: 'System-wide average',
+              icon: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'
+            },
+            { 
+              value: systemStats.total_genres?.toLocaleString() || '20', 
+              label: 'Movie Genres', 
+              desc: 'Genre categories',
+              icon: 'M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z'
+            },
+            { 
+              value: systemStats.total_keywords?.toLocaleString() || '9,504', 
+              label: 'Keywords', 
+              desc: 'Movie tags & keywords',
+              icon: 'M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z'
+            }
+          ]" :key="index" :style="{ animationDelay: `${index * 0.08}s` }">
+            <div class="stat-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path :d="stat.icon"/>
+              </svg>
             </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">⭐</div>
             <div class="stat-content">
-              <h3>{{ systemStats.total_ratings?.toLocaleString() || '50K' }}</h3>
-              <p>Total Ratings</p>
-              <small>Movie ratings from TMDB</small>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">🎯</div>
-            <div class="stat-content">
-              <h3>{{ (systemStats.avg_rating || 4.2).toFixed(2) }}</h3>
-              <p>Average Rating</p>
-              <small>System-wide average</small>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">🏷️</div>
-            <div class="stat-content">
-              <h3>{{ systemStats.total_genres?.toLocaleString() || '20' }}</h3>
-              <p>Movie Genres</p>
-              <small>Genre categories</small>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">🎭</div>
-            <div class="stat-content">
-              <h3>{{ systemStats.total_keywords?.toLocaleString() || '9,504' }}</h3>
-              <p>Keywords</p>
-              <small>Movie tags & keywords</small>
+              <h3>{{ stat.value }}</h3>
+              <p>{{ stat.label }}</p>
+              <small>{{ stat.desc }}</small>
             </div>
           </div>
         </div>
+        
         <div class="loading-stats" v-else-if="isLoadingStats">
           <div class="loading-spinner"></div>
           <p>Loading system statistics...</p>
@@ -135,22 +137,27 @@ onMounted(refreshData)
 
       <!-- Random Movies Discovery -->
       <section class="movies-section">
-        <div class="section-header">
-          <h2 class="section-title">🎲 Random Movie Discovery</h2>
-          <div class="section-controls">
-            <button @click="getRandomMovies(6)" class="btn secondary" :disabled="isLoadingRandom">
-              Load 6 Movies
-            </button>
-            <button @click="getRandomMovies(12)" class="btn secondary" :disabled="isLoadingRandom">
-              Load 12 Movies
-            </button>
-            <button @click="getRandomMovies(20)" class="btn secondary" :disabled="isLoadingRandom">
-              Load 20 Movies
-            </button>
+        <div class="section-header-wrapper">
+          <div class="section-header">
+            <div>
+              <h2 class="section-title">Random Movie Discovery</h2>
+              <p class="section-subtitle">Explore our curated collection of films</p>
+            </div>
+            <div class="section-controls">
+              <button @click="getRandomMovies(6)" class="btn secondary" :disabled="isLoadingRandom">
+                <span>6 Movies</span>
+              </button>
+              <button @click="getRandomMovies(12)" class="btn secondary" :disabled="isLoadingRandom">
+                <span>12 Movies</span>
+              </button>
+              <button @click="getRandomMovies(20)" class="btn secondary" :disabled="isLoadingRandom">
+                <span>20 Movies</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div class="movies-grid" v-if="randomMovies.length > 0">
+        <transition-group name="fade" tag="div" class="movies-grid" v-if="randomMovies.length > 0 && !isLoadingRandom">
           <MovieCard
             v-for="movie in randomMovies"
             :key="movie.id || movie.title"
@@ -158,84 +165,139 @@ onMounted(refreshData)
             @click="handleMovieClick"
             @show-details="handleMovieDetails"
           />
-        </div>
+        </transition-group>
 
         <div class="loading-section" v-else-if="isLoadingRandom">
-          <div class="loading-spinner"></div>
+          <div class="loading-spinner large"></div>
           <p>Discovering amazing movies for you...</p>
         </div>
 
         <div class="empty-section" v-else>
-          <p>Click the buttons above to discover random movies!</p>
+          <div class="empty-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+          </div>
+          <h3>Ready to Explore?</h3>
+          <p>Click the buttons above to discover random movies from our collection</p>
         </div>
       </section>
 
       <!-- Quick Actions -->
       <section class="actions-section">
-        <h2 class="section-title">⚡ Quick Actions</h2>
+        <div class="section-header-wrapper">
+          <h2 class="section-title">Quick Actions</h2>
+          <p class="section-subtitle">Fast access to key features</p>
+        </div>
         <div class="actions-grid">
           <button @click="router.push('/content-based')" class="action-card">
-            <span class="action-icon">🎭</span>
-            <h3>Content-Based</h3>
-            <p>Get recommendations based on movie content</p>
+            <div class="action-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20h9"/>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+            </div>
+            <div class="action-content">
+              <h3>Content-Based Filtering</h3>
+              <p>Get personalized recommendations based on movie attributes, genres, keywords, and production details</p>
+            </div>
+            <div class="action-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </div>
           </button>
 
           <button @click="getRandomMovies(1)" class="action-card">
-            <span class="action-icon">🎲</span>
-            <h3>Surprise Me</h3>
-            <p>Get a single random movie suggestion</p>
+            <div class="action-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <div class="action-content">
+              <h3>Surprise Me</h3>
+              <p>Discover a random movie from our extensive collection and explore something new</p>
+            </div>
+            <div class="action-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </div>
           </button>
 
           <button @click="getSystemStats" class="action-card">
-            <span class="action-icon">📊</span>
-            <h3>Update Stats</h3>
-            <p>Refresh system statistics</p>
+            <div class="action-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+            </div>
+            <div class="action-content">
+              <h3>Update Statistics</h3>
+              <p>Refresh system statistics to see the latest data and insights from our database</p>
+            </div>
+            <div class="action-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </div>
           </button>
         </div>
       </section>
 
       <!-- System Features -->
       <section class="features-section">
-        <h2 class="section-title">🌟 System Features</h2>
+        <div class="section-header-wrapper">
+          <h2 class="section-title">System Features</h2>
+          <p class="section-subtitle">Powered by cutting-edge technology</p>
+        </div>
         <div class="features-grid">
-          <div class="feature-card">
-            <h3>🎬 Rich Movie Database</h3>
-            <p>
-              Access to 4,800+ movies with detailed metadata including genres, keywords, cast, crew,
-              and production information.
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>🤖 Advanced ML Algorithms</h3>
-            <p>
-              State-of-the-art recommendation algorithms including collaborative filtering and
-              content-based filtering.
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>⚡ Real-time Recommendations</h3>
-            <p>
-              Get instant movie recommendations without waiting - our system is optimized for speed
-              and accuracy.
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>🔍 Multiple Search Methods</h3>
-            <p>
-              Search movies by title, explore random selections, or get personalized recommendations
-              based on your preferences.
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>📊 Detailed Analytics</h3>
-            <p>Comprehensive statistics about the movie database and recommendation performance.</p>
-          </div>
-          <div class="feature-card">
-            <h3>🎭 Content Analysis</h3>
-            <p>
-              Advanced content analysis using genres, keywords, cast, and production companies for
-              better recommendations.
-            </p>
+          <div class="feature-card" v-for="(feature, index) in [
+            { 
+              title: 'Rich Movie Database', 
+              desc: 'Access to 4,800+ movies with detailed metadata including genres, keywords, cast, crew, and production information from TMDB.',
+              icon: 'M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z'
+            },
+            { 
+              title: 'Advanced ML Algorithms', 
+              desc: 'State-of-the-art recommendation algorithms including collaborative filtering, content-based filtering, and hybrid approaches.',
+              icon: 'M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z'
+            },
+            { 
+              title: 'Real-time Recommendations', 
+              desc: 'Get instant movie recommendations without waiting - our system is optimized for speed and accuracy with efficient caching.',
+              icon: 'M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z'
+            },
+            { 
+              title: 'Multiple Search Methods', 
+              desc: 'Search movies by title, explore random selections, or get personalized recommendations based on your viewing preferences.',
+              icon: 'M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'
+            },
+            { 
+              title: 'Detailed Analytics', 
+              desc: 'Comprehensive statistics about the movie database, user ratings, and recommendation system performance metrics.',
+              icon: 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z'
+            },
+            { 
+              title: 'Content Analysis', 
+              desc: 'Advanced content analysis using genres, keywords, cast, crew, and production companies for highly accurate recommendations.',
+              icon: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'
+            }
+          ]" :key="index" :style="{ animationDelay: `${index * 0.05}s` }">
+            <div class="feature-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                <path :d="feature.icon"/>
+              </svg>
+            </div>
+            <div class="feature-content">
+              <h3>{{ feature.title }}</h3>
+              <p>{{ feature.desc }}</p>
+            </div>
           </div>
         </div>
       </section>
@@ -246,498 +308,515 @@ onMounted(refreshData)
 <style scoped>
 .explore-view {
   min-height: 100vh;
-  padding: 20px;
+  padding: 32px 0 80px;
 }
 
 .container {
-  max-width: 1400px;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 0 30px;
+  padding: 0 32px;
 }
 
+/* Hero Header - 统一色调，增强玻璃质感 */
 .header-section {
-  text-align: center;
-  margin-bottom: 40px;
-  padding: 50px 30px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 16px;
-  color: white;
   position: relative;
+  text-align: center;
+  margin-bottom: 56px;
+  padding: 80px 48px;
+  /* 统一的浅青色调玻璃渐变 */
+  background: linear-gradient(135deg, rgba(235, 248, 245, 0.9) 0%, rgba(225, 240, 235, 0.95) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(184, 213, 198, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.header-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(153, 205, 216, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(184, 213, 198, 0.2) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.header-content {
+  position: relative;
+  z-index: 1;
 }
 
 .page-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 15px;
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: #2C3E3F;
+  letter-spacing: -1px;
 }
 
 .page-description {
-  font-size: 1.1rem;
-  opacity: 0.9;
-  max-width: 600px;
-  margin: 0 auto 25px auto;
-  line-height: 1.6;
+  font-size: 1.2rem;
+  color: #4A5568;
+  max-width: 720px;
+  margin: 0 auto 40px;
+  line-height: 1.8;
 }
 
 .header-actions {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   justify-content: center;
-  flex-wrap: wrap;
 }
 
 .action-btn {
-  background: rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, #99CDD8 0%, #B8D5C6 100%);
   color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: none;
   padding: 16px 32px;
-  border-radius: 25px;
+  border-radius: 14px;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   transition: all 0.3s ease;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  backdrop-filter: blur(10px);
-  min-height: 56px;
-  min-width: 180px;
-  justify-content: center;
+  box-shadow: 0 6px 20px rgba(153, 205, 216, 0.3);
 }
 
-.action-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+.action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(153, 205, 216, 0.4);
 }
 
-.action-btn.content {
-  background: rgba(255, 193, 7, 0.3);
-  border-color: rgba(255, 193, 7, 0.5);
-}
-
-.action-btn.content:hover:not(:disabled) {
-  background: rgba(255, 193, 7, 0.4);
-  border-color: rgba(255, 193, 7, 0.7);
-}
-
-.action-btn.collaborative {
-  background: rgba(76, 175, 80, 0.3);
-  border-color: rgba(76, 175, 80, 0.5);
-}
-
-.action-btn.collaborative:hover:not(:disabled) {
-  background: rgba(76, 175, 80, 0.4);
-  border-color: rgba(76, 175, 80, 0.7);
-}
-
-.action-btn.refresh {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.action-btn.refresh:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-.action-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.refresh-icon {
-  display: inline-block;
-  animation: none;
-}
-
-.refresh-btn:disabled .refresh-icon {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Section Headers */
+.section-header-wrapper {
+  text-align: center;
+  margin-bottom: 48px;
 }
 
 .section-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 25px;
-  text-align: center;
-  position: relative;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #2C3E3F;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
 }
 
-.section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 2px;
+.section-subtitle {
+  font-size: 1.1rem;
+  color: #718096;
+  font-weight: 500;
 }
 
+/* Stats Section - 统一色调 */
 .stats-section {
-  background: white;
-  padding: 50px 40px;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  padding: 56px 48px;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  margin-bottom: 56px;
+  border: 1px solid rgba(184, 213, 198, 0.3);
 }
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 28px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .stat-card {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  padding: 30px;
-  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(235, 248, 245, 0.85) 0%, rgba(225, 240, 235, 0.85) 100%);
+  padding: 32px;
+  border-radius: 18px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 20px;
+  text-align: center;
   transition: all 0.3s ease;
-  border-left: 4px solid #667eea;
+  border: 2px solid rgba(184, 213, 198, 0.4);
+  animation: fadeInUp 0.6s ease-out backwards;
 }
 
 .stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(153, 205, 216, 0.25);
+  border-color: #99CDD8;
 }
 
 .stat-icon {
-  font-size: 3rem;
-  opacity: 0.8;
-  flex-shrink: 0;
-}
-
-.stat-content {
-  flex: 1;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #99CDD8 0%, #B8D5C6 100%);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-bottom: 20px;
 }
 
 .stat-content h3 {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #333;
-  margin: 0 0 5px 0;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #2C3E3F;
+  margin: 0 0 8px 0;
 }
 
 .stat-content p {
   font-size: 1.1rem;
-  font-weight: 600;
-  color: #333;
-  margin: 0 0 5px 0;
+  font-weight: 700;
+  color: #4A5D5E;
+  margin: 0 0 6px 0;
 }
 
 .stat-content small {
-  color: #666;
+  color: #718096;
   font-size: 0.9rem;
+  font-weight: 500;
 }
 
+/* Movies Section - 统一色调 */
 .movies-section,
 .actions-section,
 .features-section {
-  background: white;
-  padding: 50px 40px;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  padding: 56px 48px;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  margin-bottom: 56px;
+  border: 1px solid rgba(184, 213, 198, 0.3);
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 35px;
+  align-items: flex-start;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 24px;
+  margin-bottom: 40px;
 }
 
 .section-controls {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .btn {
   padding: 12px 24px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  box-shadow: 0 4px 12px rgba(153, 205, 216, 0.2);
 }
 
 .btn.secondary {
-  background: #6c757d;
+  background: linear-gradient(135deg, #99CDD8 0%, #B8D5C6 100%);
   color: white;
 }
 
 .btn.secondary:hover:not(:disabled) {
-  background: #5a6268;
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(153, 205, 216, 0.35);
 }
 
 .btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .movies-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 32px;
 }
 
-.badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: white;
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease;
 }
 
-.badge.gold {
-  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
 }
 
-.badge.silver {
-  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+.fade-leave-to {
+  opacity: 0;
 }
 
-.badge.bronze {
-  background: linear-gradient(135deg, #cd7f32 0%, #8b4513 100%);
+/* Loading & Empty States - 统一色调 */
+.loading-section,
+.loading-stats,
+.empty-section {
+  text-align: center;
+  padding: 64px 32px;
+  color: #4A5568;
 }
 
+.loading-spinner {
+  width: 56px;
+  height: 56px;
+  border: 5px solid rgba(184, 213, 198, 0.3);
+  border-top: 5px solid #99CDD8;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 24px;
+}
+
+.loading-spinner.large {
+  width: 72px;
+  height: 72px;
+  border-width: 6px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.empty-section {
+  background: linear-gradient(135deg, rgba(235, 248, 245, 0.6) 0%, rgba(225, 240, 235, 0.6) 100%);
+  border-radius: 20px;
+  border: 2px dashed rgba(184, 213, 198, 0.5);
+}
+
+.empty-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px;
+  background: linear-gradient(135deg, rgba(153, 205, 216, 0.2) 0%, rgba(184, 213, 198, 0.2) 100%);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #99CDD8;
+}
+
+.empty-section h3 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2C3E3F;
+  margin-bottom: 12px;
+}
+
+.empty-section p {
+  font-size: 1.05rem;
+  color: #718096;
+}
+
+/* Actions Grid - 统一色调 */
 .actions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 25px;
-  margin-top: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 28px;
 }
 
 .action-card {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border: none;
-  padding: 30px 25px;
-  border-radius: 12px;
-  text-align: left;
+  background: linear-gradient(135deg, rgba(235, 248, 245, 0.7) 0%, rgba(225, 240, 235, 0.7) 100%);
+  border: 2px solid rgba(184, 213, 198, 0.4);
+  padding: 32px;
+  border-radius: 18px;
   cursor: pointer;
   transition: all 0.3s ease;
-  border-left: 4px solid #667eea;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-align: left;
 }
 
 .action-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 32px rgba(153, 205, 216, 0.25);
+  border-color: #99CDD8;
 }
 
 .action-icon {
-  font-size: 2.5rem;
-  display: block;
-  margin-bottom: 15px;
-}
-
-.action-card h3 {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.action-card p {
-  color: #666;
-  line-height: 1.5;
-  margin: 0;
-}
-
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 25px;
-  margin-top: 30px;
-}
-
-.feature-card {
-  background: #f8f9fa;
-  padding: 30px 25px;
-  border-radius: 12px;
-  border-left: 4px solid #667eea;
-}
-
-.feature-card h3 {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 15px;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #99CDD8 0%, #B8D5C6 100%);
+  border-radius: 14px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
 }
 
-.feature-card p {
-  color: #666;
+.action-content {
+  flex: 1;
+}
+
+.action-content h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2C3E3F;
+  margin-bottom: 8px;
+}
+
+.action-content p {
+  color: #718096;
   line-height: 1.6;
   margin: 0;
+  font-size: 0.95rem;
 }
 
-.loading-stats,
-.loading-section,
-.empty-section {
-  text-align: center;
-  padding: 40px;
-  color: #666;
+.action-arrow {
+  color: #99CDD8;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
 }
 
-.loading-spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #667eea;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 20px;
+.action-card:hover .action-arrow {
+  transform: translateX(6px);
 }
 
-.empty-section {
-  background: #f8f9fa;
-  border-radius: 12px;
-  font-style: italic;
+/* Features Grid - 统一色调 */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+}
+.feature-card {
+  background: linear-gradient(135deg, rgba(235, 248, 245, 0.7) 0%, rgba(225, 240, 235, 0.7) 100%);
+  padding: 32px;
+  border-radius: 18px;
+  border: 2px solid rgba(184, 213, 198, 0.4);
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.6s ease-out backwards;
+  display: flex;
+  gap: 20px;
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(153, 205, 216, 0.25);
+  border-color: #99CDD8;
+}
+.feature-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #99CDD8 0%, #B8D5C6 100%);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+.feature-content h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2C3E3F;
+  margin-bottom: 10px;
+}
+.feature-content p {
+  color: #718096;
+  line-height: 1.7;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .page-title {
+    font-size: 3rem;
+  }
+  .stats-grid,
+  .features-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
 }
 
 @media (max-width: 768px) {
-  .explore-view {
-    padding: 15px;
+  .container {
+    padding: 0 20px;
   }
-
+  .header-section {
+    padding: 56px 32px;
+    margin-bottom: 40px;
+  }
   .page-title {
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
-
   .page-description {
-    font-size: 1rem;
+    font-size: 1.05rem;
   }
-
-  .header-actions {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .action-btn {
-    width: 100%;
-    max-width: 280px;
-    justify-content: center;
-  }
-
-  .section-title {
-    font-size: 1.8rem;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-  }
-
-  .stat-card {
-    flex-direction: column;
-    text-align: center;
-    gap: 15px;
-    padding: 25px;
-  }
-
+  .stats-section,
   .movies-section,
   .actions-section,
-  .features-section,
-  .stats-section {
-    padding: 35px 25px;
+  .features-section {
+    padding: 40px 32px;
+    margin-bottom: 40px;
   }
-
+  .section-title {
+    font-size: 2rem;
+  }
   .section-header {
     flex-direction: column;
-    align-items: center;
-    gap: 20px;
   }
-
-  .section-controls {
-    justify-content: center;
-  }
-
-  .movies-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 25px;
-  }
-
-  .actions-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
+  .stats-grid,
+  .actions-grid,
   .features-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-
-  .action-card {
-    padding: 25px 20px;
+  .movies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 24px;
   }
 }
 
 @media (max-width: 480px) {
+  .container {
+    padding: 0 16px;
+  }
+  .header-section {
+    padding: 40px 24px;
+  }
   .page-title {
-    font-size: 1.8rem;
+    font-size: 2rem;
   }
-
   .page-description {
-    font-size: 0.95rem;
-    margin-bottom: 20px;
-  }
-
-  .header-actions {
-    gap: 12px;
-  }
-
-  .action-btn {
-    padding: 14px 28px;
     font-size: 1rem;
-    min-height: 50px;
-    min-width: 160px;
   }
-
   .section-title {
-    font-size: 1.6rem;
+    font-size: 1.75rem;
   }
-
+  .stats-section,
+  .movies-section,
+  .actions-section,
+  .features-section {
+    padding: 32px 24px;
+  }
   .movies-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
-
-  .stat-card {
-    padding: 20px;
-  }
-
-  .stat-icon {
-    font-size: 2.5rem;
-  }
-
-  .stat-content h3 {
-    font-size: 1.8rem;
+  .action-card,
+  .feature-card {
+    flex-direction: column;
+    text-align: center;
   }
 }
 </style>

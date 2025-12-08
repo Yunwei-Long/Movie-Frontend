@@ -37,7 +37,6 @@ const getSimilarUsers = async () => {
 
 const getSimilarMoviesByName = async () => {
   if (!selectedMovieName.value.trim()) return
-
   try {
     const results = await movieStore.searchMovies(selectedMovieName.value, 10)
     similarMoviesByName.value = results
@@ -342,7 +341,6 @@ onMounted(async () => {
           />
         </div>
 
-        <!-- Results -->
         <div class="results-section" v-if="similarMoviesByName.length > 0">
           <div class="results-header">
             <h2>🎯 Movies Similar to "{{ selectedMovieName }}"</h2>
@@ -415,9 +413,9 @@ onMounted(async () => {
   text-align: center;
   margin-bottom: 40px;
   padding: 40px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #99CDD8 0%, #DAEBE3 100%);
   border-radius: 16px;
-  color: white;
+  color: #657166;
 }
 
 .page-title {
@@ -448,7 +446,7 @@ onMounted(async () => {
   background: white;
   padding: 25px;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(153, 205, 216, 0.2);
   display: flex;
   align-items: center;
   gap: 20px;
@@ -467,12 +465,12 @@ onMounted(async () => {
 .stat-content h3 {
   font-size: 2rem;
   font-weight: 700;
-  color: #333;
+  color: #657166;
   margin: 0 0 5px 0;
 }
 
 .stat-content p {
-  color: #666;
+  color: #657166;
   margin: 0;
   font-weight: 500;
 }
@@ -480,15 +478,15 @@ onMounted(async () => {
 .tab-section {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(153, 205, 216, 0.2);
   margin-bottom: 30px;
   overflow: hidden;
 }
 
 .tab-nav {
   display: flex;
-  background: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
+  background: #DAEBE3;
+  border-bottom: 1px solid #CFD6C4;
 }
 
 .tab-btn {
@@ -498,21 +496,20 @@ onMounted(async () => {
   border: none;
   font-size: 1rem;
   font-weight: 600;
-  color: #6c757d;
+  color: #657166;
   cursor: pointer;
   transition: all 0.3s ease;
   border-bottom: 3px solid transparent;
 }
 
 .tab-btn:hover {
-  background: #e9ecef;
-  color: #495057;
+  background: #CFD6C4;
 }
 
 .tab-btn.active {
   background: white;
-  color: #667eea;
-  border-bottom-color: #667eea;
+  color: #99CDD8;
+  border-bottom-color: #99CDD8;
 }
 
 .tab-content {
@@ -522,7 +519,7 @@ onMounted(async () => {
 }
 
 .controls-section {
-  background: #f8f9fa;
+  background: #DAEBE3;
   padding: 25px;
   border-radius: 8px;
   margin-bottom: 30px;
@@ -538,23 +535,24 @@ onMounted(async () => {
 
 .user-input-group label {
   font-weight: 600;
-  color: #333;
+  color: #657166;
   min-width: 140px;
 }
 
 .user-input {
   width: 120px;
   padding: 12px 16px;
-  border: 2px solid #e9ecef;
+  border: 2px solid #CFD6C4;
   border-radius: 8px;
   font-size: 1rem;
   text-align: center;
   transition: border-color 0.3s ease;
+  color: #657166;
 }
 
 .user-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #99CDD8;
 }
 
 .btn {
@@ -568,22 +566,22 @@ onMounted(async () => {
 }
 
 .btn.primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #99CDD8 0%, #DAEBE3 100%);
+  color: #657166;
 }
 
 .btn.primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 15px rgba(153, 205, 216, 0.4);
 }
 
 .btn.secondary {
-  background: #6c757d;
+  background: #F3C3B2;
   color: white;
 }
 
 .btn.secondary:hover {
-  background: #5a6268;
+  background: #e5b5a3;
 }
 
 .quick-users {
@@ -595,13 +593,13 @@ onMounted(async () => {
 
 .quick-users span {
   font-weight: 600;
-  color: #333;
+  color: #657166;
 }
 
 .quick-user-btn {
   background: white;
-  border: 2px solid #667eea;
-  color: #667eea;
+  border: 2px solid #99CDD8;
+  color: #99CDD8;
   padding: 8px 16px;
   border-radius: 20px;
   cursor: pointer;
@@ -611,20 +609,20 @@ onMounted(async () => {
 }
 
 .quick-user-btn:hover {
-  background: #667eea;
+  background: #99CDD8;
   color: white;
 }
 
 .user-profile-section {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, #DAEBE3 0%, #CFD6C4 100%);
   padding: 25px;
   border-radius: 12px;
   margin-bottom: 30px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #99CDD8;
 }
 
 .user-profile-section h3 {
-  color: #333;
+  color: #657166;
   margin-bottom: 20px;
   font-size: 1.4rem;
 }
@@ -639,18 +637,18 @@ onMounted(async () => {
   background: white;
   padding: 15px 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(153, 205, 216, 0.15);
 }
 
 .stat-label {
-  color: #666;
+  color: #657166;
   font-size: 0.9rem;
   display: block;
   margin-bottom: 5px;
 }
 
 .stat-value {
-  color: #333;
+  color: #657166;
   font-weight: 700;
   font-size: 1.1rem;
 }
@@ -665,17 +663,17 @@ onMounted(async () => {
   align-items: center;
   margin-bottom: 25px;
   padding-bottom: 15px;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid #DAEBE3;
 }
 
 .results-header h2 {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #333;
+  color: #657166;
 }
 
 .results-count {
-  color: #666;
+  color: #657166;
   font-size: 1rem;
 }
 
@@ -685,14 +683,16 @@ onMounted(async () => {
   gap: 25px;
 }
 
-.similar-users-section {
+.similar-users-section,
+.top-users-section {
   margin-bottom: 40px;
 }
 
-.similar-users-section h2 {
+.similar-users-section h2,
+.top-users-section h2 {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #333;
+  color: #657166;
   margin-bottom: 25px;
 }
 
@@ -706,31 +706,32 @@ onMounted(async () => {
   background: white;
   padding: 25px;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(153, 205, 216, 0.2);
   display: flex;
   align-items: center;
   gap: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
   border: 2px solid transparent;
+  position: relative;
 }
 
 .user-card:hover {
   transform: translateY(-4px);
-  border-color: #667eea;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  border-color: #99CDD8;
+  box-shadow: 0 8px 30px rgba(153, 205, 216, 0.25);
 }
 
 .user-card.top-user {
-  border-left: 4px solid #ffc107;
+  border-left: 4px solid #FDE8D3;
 }
 
 .user-rank {
   position: absolute;
   top: 10px;
   left: 10px;
-  background: #ffc107;
-  color: #333;
+  background: #FDE8D3;
+  color: #657166;
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 0.8rem;
@@ -740,13 +741,14 @@ onMounted(async () => {
 .user-avatar {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #99CDD8 0%, #DAEBE3 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.8rem;
-  color: white;
+  color: #657166;
+  flex-shrink: 0;
 }
 
 .user-info {
@@ -756,18 +758,18 @@ onMounted(async () => {
 .user-info h4 {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #333;
+  color: #657166;
   margin-bottom: 8px;
 }
 
 .user-info p {
-  color: #666;
+  color: #657166;
   margin: 4px 0;
   font-size: 0.9rem;
 }
 
 .user-badge {
-  background: #28a745;
+  background: #CFD6C4;
   color: white;
   padding: 4px 8px;
   border-radius: 12px;
@@ -778,7 +780,7 @@ onMounted(async () => {
 }
 
 .search-section {
-  background: #f8f9fa;
+  background: #DAEBE3;
   padding: 25px;
   border-radius: 12px;
   margin-bottom: 30px;
@@ -787,7 +789,7 @@ onMounted(async () => {
 .search-section h2 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #333;
+  color: #657166;
   margin-bottom: 20px;
   text-align: center;
 }
@@ -796,14 +798,14 @@ onMounted(async () => {
   background: white;
   padding: 40px 30px;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(153, 205, 216, 0.2);
 }
 
 .info-content h2 {
   text-align: center;
   font-size: 2rem;
   font-weight: 700;
-  color: #333;
+  color: #657166;
   margin-bottom: 30px;
 }
 
@@ -814,16 +816,16 @@ onMounted(async () => {
 }
 
 .info-card {
-  background: #f8f9fa;
+  background: #DAEBE3;
   padding: 25px;
   border-radius: 10px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #99CDD8;
 }
 
 .info-card h4 {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #333;
+  color: #657166;
   margin-bottom: 12px;
   display: flex;
   align-items: center;
@@ -831,7 +833,7 @@ onMounted(async () => {
 }
 
 .info-card p {
-  color: #666;
+  color: #657166;
   line-height: 1.6;
   margin: 0;
 }
@@ -853,16 +855,11 @@ onMounted(async () => {
     flex: 1 1 50%;
     min-width: 120px;
     font-size: 0.9rem;
-    padding: 14px 16px;
   }
 
   .user-input-group {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .user-input-group label {
-    min-width: auto;
   }
 
   .user-input {
@@ -871,61 +868,28 @@ onMounted(async () => {
 
   .stats-grid {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-  }
-
-  .stat-card {
-    padding: 20px;
-    flex-direction: column;
-    text-align: center;
-    gap: 15px;
   }
 
   .movies-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
   }
 
   .users-grid {
     grid-template-columns: 1fr;
-    gap: 15px;
   }
 
   .info-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
   }
 }
 
 @media (max-width: 480px) {
-  .page-title {
-    font-size: 1.8rem;
-  }
-
   .tab-btn {
     flex: 1 1 100%;
-    font-size: 0.85rem;
-    padding: 12px 14px;
   }
 
   .movies-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
-  }
-
-  .user-card {
-    padding: 20px;
-  }
-
-  .user-avatar {
-    width: 50px;
-    height: 50px;
-    font-size: 1.5rem;
-  }
-
-  .quick-users {
-    flex-direction: column;
-    align-items: flex-start;
   }
 }
 </style>
