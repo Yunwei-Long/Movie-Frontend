@@ -8,15 +8,15 @@
   --vt-c-black-soft: #222222;
   --vt-c-black-mute: #282828;
 
-  --vt-c-indigo: #2c3e50;
+  --vt-c-indigo: #657166;
 
-  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
+  --vt-c-divider-light-1: rgba(153, 205, 216, 0.29);
+  --vt-c-divider-light-2: rgba(153, 205, 216, 0.12);
   --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
   --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
 
   --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
+  --vt-c-text-light-2: rgba(101, 113, 102, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
 }
@@ -35,32 +35,32 @@
 
   --section-gap: 160px;
 
-  /* Movie Recommendation App CSS Variables */
+  /* Movie Recommendation App CSS Variables - 新配色方案 */
 
   /* Colors */
-  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --primary-color: #667eea;
-  --primary-dark: #764ba2;
-  --primary-light: #8b9cff;
-  --secondary-color: #6c757d;
-  --success-color: #44ff44;
-  --error-color: #ff4757;
-  --warning-color: #ffc107;
-  --info-color: #339af0;
+  --primary-gradient: linear-gradient(135deg, #99CDD8 0%, #DAEBE3 100%);
+  --primary-color: #99CDD8;
+  --primary-dark: #657166;
+  --primary-light: #DAEBE3;
+  --secondary-color: #F3C3B2;
+  --success-color: #CFD6C4;
+  --error-color: #F3C3B2;
+  --warning-color: #FDE8D3;
+  --info-color: #99CDD8;
 
   /* Text Colors */
-  --text-primary: #333333;
-  --text-secondary: #666666;
+  --text-primary: #657166;
+  --text-secondary: #657166;
   --text-muted: #999999;
   --text-white: #ffffff;
   --text-inverse: #ffffff;
 
   /* Backgrounds */
   --bg-white: #ffffff;
-  --bg-light: #f8f9fa;
-  --bg-lighter: #f5f7fa;
-  --bg-section: #e9ecef;
-  --bg-overlay: rgba(0, 0, 0, 0.7);
+  --bg-light: #DAEBE3;
+  --bg-lighter: #FDE8D3;
+  --bg-section: #CFD6C4;
+  --bg-overlay: rgba(101, 113, 102, 0.7);
 
   /* Spacing */
   --spacing-xs: 4px;
@@ -83,10 +83,10 @@
   --radius-full: 50%;
 
   /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.15);
-  --shadow-xl: 0 12px 40px rgba(0, 0, 0, 0.2);
+  --shadow-sm: 0 2px 8px rgba(153, 205, 216, 0.15);
+  --shadow-md: 0 4px 20px rgba(153, 205, 216, 0.2);
+  --shadow-lg: 0 8px 30px rgba(153, 205, 216, 0.25);
+  --shadow-xl: 0 12px 40px rgba(153, 205, 216, 0.3);
 
   /* Typography */
   --font-size-xs: 0.75rem;
